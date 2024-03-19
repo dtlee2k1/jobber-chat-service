@@ -26,7 +26,7 @@ export async function message(req: Request, res: Response, _next: NextFunction) 
     ) as UploadApiResponse;
 
     if (!uploadResult.public_id) {
-      throw new BadRequestError('File upload error. Try again', 'Signup signUp() method error');
+      throw new BadRequestError('File upload error. Try again', 'Create message() method error');
     }
 
     file = uploadResult.secure_url;
