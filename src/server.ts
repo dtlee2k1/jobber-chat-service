@@ -15,7 +15,7 @@ import { CustomError, IErrorResponse } from '@chat/error-handler';
 import { checkConnection } from '@chat/elasticsearch';
 import { createConnection } from '@chat/queues/connection';
 import healthRouter from '@chat/routes/health.routes';
-import chatRouter from '@chat/routes/chat.routes';
+import messageRouter from '@chat/routes/message.routes';
 import { Server } from 'socket.io';
 
 const SERVER_PORT = 4005;
@@ -65,7 +65,7 @@ function standardMiddleware(app: Application) {
 function routesMiddleware(app: Application) {
   const BASE_PATH = '/api/v1/message';
   app.use(healthRouter);
-  app.use(BASE_PATH, verifyGatewayRequest, chatRouter);
+  app.use(BASE_PATH, verifyGatewayRequest, messageRouter);
 }
 
 async function startQueues() {

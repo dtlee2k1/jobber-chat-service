@@ -1,4 +1,4 @@
-import { markManyMessagesAsRead, markMessageAsRead, updateOffer } from '@chat/services/message.service';
+import { markMessageAsRead, markMultipleMessagesAsRead, updateOffer } from '@chat/services/message.service';
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
@@ -27,7 +27,7 @@ export async function markSingleMessage(req: Request, res: Response, _next: Next
 export async function markMultipleMessages(req: Request, res: Response, _next: NextFunction) {
   const { messageId, senderUsername, receiverUsername } = req.body;
 
-  await markManyMessagesAsRead(senderUsername, receiverUsername, messageId);
+  await markMultipleMessagesAsRead(receiverUsername, senderUsername, messageId);
 
   res.status(StatusCodes.OK).json({
     message: 'Mark messages as read successfully'

@@ -21,7 +21,7 @@ export async function conversationList(req: Request, res: Response, _next: NextF
 
   res.status(StatusCodes.OK).json({
     message: 'Get conversation list successfully',
-    conversation: messages
+    conversations: messages
   });
 }
 

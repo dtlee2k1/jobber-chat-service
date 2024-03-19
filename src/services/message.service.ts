@@ -34,10 +34,10 @@ export async function addMessage(data: IMessageDocument) {
       JSON.stringify(emailMessageDetails),
       'Order email sent to notification service'
     );
-
-    socketIOChatObject.emit('message_received', message);
-    return message;
   }
+
+  socketIOChatObject.emit('message_received', message);
+  return message;
 }
 
 export async function getConversation(sender: string, receiver: string) {
@@ -139,7 +139,7 @@ export async function markMessageAsRead(messageId: string) {
   return message;
 }
 
-export async function markManyMessagesAsRead(sender: string, receiver: string, messageId: string) {
+export async function markMultipleMessagesAsRead(receiver: string, sender: string, messageId: string) {
   await MessageModel.updateMany(
     { senderUsername: sender, receiverUsername: receiver, isRead: false },
     {

@@ -55,5 +55,9 @@ export async function message(req: Request, res: Response, _next: NextFunction) 
     await createConversation(`${messageData.conversationId}`, `${messageData.senderUsername}`, `${messageData.receiverUsername}`);
   }
   await addMessage(messageData);
-  res.status(StatusCodes.OK).json({ message: 'Message added', conversationId: req.body.conversationId, messageData });
+  res.status(StatusCodes.CREATED).json({
+    message: 'Message added',
+    conversationId: req.body.conversationId,
+    messageData
+  });
 }
