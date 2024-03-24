@@ -2,7 +2,7 @@ import { ConversationModel } from '@chat/models/conversation.schema';
 import { MessageModel } from '@chat/models/message.schema';
 import { publishDirectMessage } from '@chat/queues/message.producer';
 import { chatChannel, socketIOChatObject } from '@chat/server';
-import { IConversationDocument, IMessageDocument } from '@dtlee2k1/jobber-shared';
+import { IConversationDocument, IMessageDocument, lowerCase } from '@dtlee2k1/jobber-shared';
 
 export async function createConversation(conversationId: string, sender: string, receiver: string) {
   await ConversationModel.create({
@@ -19,8 +19,8 @@ export async function addMessage(data: IMessageDocument) {
     const emailMessageDetails = {
       sender: data.senderUsername,
       amount: data.offer?.price,
-      buyerUsername: data.receiverUsername?.toLowerCase(),
-      sellerUsername: data.senderUsername?.toLowerCase(),
+      buyerUsername: lowerCase(`${data.receiverUsername}`),
+      sellerUsername: lowerCase(`${data.senderUsername}`),
       title: data.offer?.gigTitle,
       description: data.offer?.description,
       deliveryInDays: data.offer?.deliveryInDays,
