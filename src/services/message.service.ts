@@ -2,7 +2,7 @@ import { ConversationModel } from '@chat/models/conversation.schema';
 import { MessageModel } from '@chat/models/message.schema';
 import { publishDirectMessage } from '@chat/queues/message.producer';
 import { chatChannel, socketIOChatObject } from '@chat/server';
-import { IConversationDocument, IMessageDocument } from '@dtlee2k1/jobber-shared';
+import { IConversationDocument, IMessageDocument, lowerCase } from '@dtlee2k1/jobber-shared';
 
 export async function createConversation(conversationId: string, sender: string, receiver: string) {
   await ConversationModel.create({
@@ -13,14 +13,14 @@ export async function createConversation(conversationId: string, sender: string,
 }
 
 export async function addMessage(data: IMessageDocument) {
-  const message: IMessageDocument = MessageModel.create({ data }) as IMessageDocument;
+  const message: IMessageDocument = (await MessageModel.create(data)) as IMessageDocument;
 
   if (message.hasOffer) {
     const emailMessageDetails = {
       sender: data.senderUsername,
       amount: data.offer?.price,
-      buyerUsername: data.receiverUsername?.toLowerCase(),
-      sellerUsername: data.senderUsername?.toLowerCase(),
+      buyerUsername: lowerCase(`${data.receiverUsername}`),
+      sellerUsername: lowerCase(`${data.senderUsername}`),
       title: data.offer?.gigTitle,
       description: data.offer?.description,
       deliveryInDays: data.offer?.deliveryInDays,
@@ -59,9 +59,19 @@ export async function getUserConversationList(username: string) {
   const messages: IMessageDocument[] = await MessageModel.aggregate([
     { $match: query },
     {
+      $sort: {
+        createdAt: -1
+      }
+    },
+    {
       $group: {
         _id: '$conversationId',
-        result: { $top: { output: '$$ROOT', sortBy: { createdAt: -1 } } }
+        result: { $first: '$$ROOT' }
+      }
+    },
+    {
+      $sort: {
+        'result.createdAt': -1
       }
     },
     {
